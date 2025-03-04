@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshBites - Simplify Your Dining Choices</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .recommendations-container {
+            background-color: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .recommendations-container h2 {
+            color: #333;
+            font-family: 'Arial', sans-serif;
+        }
+        .recommendations-container p {
+            font-size: 16px;
+            color: #555;
+            font-family: 'Arial', sans-serif;
+        }
+        .recommendations-container ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .recommendations-container li {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+        .recommendations-container li span {
+            font-weight: bold;
+            color: #d9534f; /* Red color for emphasis */
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <img src="indian-food.jpg" alt="Delicious Indian Cuisine" class="hero-image">
+        <div class="hero-text">
+            <h1>Welcome to FreshBites!</h1>
+            <p>Helping you decide your meal quickly and efficiently.</p>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="filter" class="filter-container">
+            <h2>Filter by Indian Cuisine</h2>
+            <select id="cuisineSelect" class="styled-select">
+                <option value="all">All</option>
+                <option value="rajasthani">Rajasthani</option>
+                <option value="marathi">Marathi</option>
+                <option value="gujarati">Gujarati</option>
+                <option value="punjabi">Punjabi</option>
+                <option value="bengali">Bengali</option>
+            </select>
+            <button id="filterButton" class="styled-button" onclick="showPreferences()">Filter</button>
+        </div>
+
+        <div id="preferences" class="preferences-container">
+            <h2>Select Your Preferences</h2>
+            <label for="spicyLevel">Spicy Level:</label>
+            <select id="spicyLevel" class="styled-select">
+                <option value="mild">Mild</option>
+                <option value="medium">Medium</option>
+                <option value="hot">Hot</option>
+            </select>
+            <label for="vegNonVeg">Vegetarian/Non-Vegetarian:</label>
+            <select id="vegNonVeg" class="styled-select">
+                <option value="vegetarian">Vegetarian</option>
+                <option value="non-vegetarian">Non-Vegetarian</option>
+            </select>
+            <br>
+            <label for="sweetsDrinks">Would you like to add sweets and drinks?</label>
+            <select id="sweetsDrinks" class="styled-select">
+                <option value="none">None</option>
+                <option value="sweets">Sweets</option>
+                <option value="drinks">Drinks</option>
+                <option value="both">Both</option>
+            </select>
+            <button id="submitPreferencesButton" class="styled-button" onclick="showRecommendations()">Submit Preferences</button>
+        </div>
+
+        <div id="recommendations" class="recommendations-container" style="display:none;">
+            <h2>Our Recommendations</h2>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Contact us at info@freshbites.com</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function showPreferences() {
+            document.getElementById('preferences').style.display = 'block';
+        }
+
+        function showRecommendations() {
+            const spicyLevel = document.getElementById('spicyLevel').value;
+            const vegNonVeg = document.getElementById('vegNonVeg').value;
+            const sweetsDrinks = document.getElementById('sweetsDrinks').value;
+            const cuisine = document.getElementById('cuisineSelect').value;
+            const recommendations = getRecommendations(spicyLevel, vegNonVeg, sweetsDrinks, cuisine);
+            document.getElementById('results').innerHTML = recommendations;
+            document.getElementById('recommendations').style.display = 'block';
+        }
+
+        function getRecommendations(spicyLevel, vegNonVeg, sweetsDrinks, cuisine) {
+            let recommendations = '<ul>';
+            if (spicyLevel === 'mild' && vegNonVeg === 'vegetarian') {
+                recommendations += '<li><span>Try:</span> Paneer Butter Masala</li>';
+                recommendations += '<li><span>Try:</span> Aloo Gobi</li>';
+            } else if (spicyLevel === 'medium' && vegNonVeg === 'non-vegetarian') {
+                recommendations += '<li><span>Try:</span> Chicken Tikka Masala</li>';
+                recommendations += '<li><span>Try:</span> Lamb Rogan Josh</li>';
+            } else if (spicyLevel === 'hot' && vegNonVeg === 'vegetarian') {
+                recommendations += '<li><span>Try:</span> Spicy Veg Biryani</li>';
+                recommendations += '<li><span>Try:</span> Chana Masala</li>';
+            } else if (spicyLevel === 'hot' && vegNonVeg === 'non-vegetarian') {
+                recommendations += '<li><span>Try:</span> Spicy Chicken Curry</li>';
+                recommendations += '<li><span>Try:</span> Vindaloo</li>';
+            } else {
+                recommendations += '<li><span>Try:</span> Dal Makhani</li>';
+                recommendations += '<li><span>Try:</span> Rajma</li>';
+            }
+
+            if (vegNonVeg === 'non-vegetarian') {
+                recommendations += getNonVegRecommendations(cuisine);
+            }
+
+            if (sweetsDrinks === 'sweets') {
+                recommendations += getSweetsRecommendations(cuisine);
+            } else if (sweetsDrinks === 'drinks') {
+                recommendations += getDrinksRecommendations(cuisine);
+            } else if (sweetsDrinks === 'both') {
+                recommendations += getSweetsRecommendations(cuisine);
+                recommendations += getDrinksRecommendations(cuisine);
+            }
+
+            recommendations += '</ul>';
+            return recommendations;
+        }
+
+        function getNonVegRecommendations(cuisine) {
+            let nonVeg = '';
+            if (cuisine === 'rajasthani') {
+                nonVeg += '<li><span>For non-vegetarian:</span> Laal Maas</li>';
+            } else if (cuisine === 'marathi') {
+                nonVeg += '<li><span>For non-vegetarian:</span> Malvani Fish Curry</li>';
+            } else if (cuisine === 'gujarati') {
+                nonVeg += '<li><span>For non-vegetarian:</span> Chicken Handi</li>';
+            } else if (cuisine === 'punjabi') {
+                nonVeg += '<li><span>For non-vegetarian:</span> Butter Chicken</li>';
+            } else if (cuisine === 'bengali') {
+                nonVeg += '<li><span>For non-vegetarian:</span> Macher Jhol</li>';
+            } else {
+                nonVeg += '<li><span>For non-vegetarian:</span> Chicken Curry</li>';
+            }
+            return nonVeg;
+        }
+
+        function getSweetsRecommendations(cuisine) {
+            let sweets = '';
+            if (cuisine === 'rajasthani') {
+                sweets += '<li><span>For sweets:</span> Ghewar</li>';
+            } else if (cuisine === 'marathi') {
+                sweets += '<li><span>For sweets:</span> Puran Poli</li>';
+            } else if (cuisine === 'gujarati') {
+                sweets += '<li><span>For sweets:</span> Mohanthal</li>';
+            } else if (cuisine === 'punjabi') {
+                sweets += '<li><span>For sweets:</span> Jalebi</li>';
+            } else if (cuisine === 'bengali') {
+                sweets += '<li><span>For sweets:</span> Rasgulla</li>';
+            } else {
+                sweets += '<li><span>For sweets:</span> Gulab Jamun</li>';
+            }
+            return sweets;
+        }
+
+        function getDrinksRecommendations(cuisine) {
+            let drinks = '';
+            if (cuisine === 'rajasthani') {
+                drinks += '<li><span>For drinks:</span> Thandai</li>';
+            } else if (cuisine === 'marathi') {
+                drinks += '<li><span>For drinks:</span> Solkadhi</li>';
+            } else if (cuisine === 'gujarati') {
+                drinks += '<li><span>For drinks:</span> Chaas</li>';
+            } else if (cuisine === 'punjabi') {
+                drinks += '<li><span>For drinks:</span> Lassi</li>';
+            } else if (cuisine === 'bengali') {
+                drinks += '<li><span>For drinks:</span> Aam Panna</li>';
+            } else {
+                drinks += '<li><span>For drinks:</span> Mango Lassi</li>';
+            }
+            return drinks;
+        }
+    </script>
+</body>
+</html>
